@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loja Virtual de Basquete</title>
+<style>
+  /* Reset e base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #f5f5f5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a {
+    color: #ff6200;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  header {
+    background: #1f1f1f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 4px solid #ff6200;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    font-size: 1.8rem;
+    color: #ff6200;
+    font-family: 'Impact', sans-serif;
+  }
+  #loginButton {
+    background: #ff6200;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #loginButton:hover {
+    background: #e65c00;
+  }
+
+  main {
+    max-width: 960px;
+    margin: 2rem auto 4rem;
+    padding: 0 1rem;
+  }
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .category-btn {
+    background: #292929;
+    border: 2px solid transparent;
+    padding: 0.75rem 1.3rem;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    color: #ff6200;
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+  .category-btn.active {
+    background: #ff6200;
+    color: #121212;
+    border-color: #ff6200;
+  }
+  .category-btn:hover:not(.active) {
+    border-color: #ff6200;
+  }
+
+  section.products {
+    background: #1f1f1f;
+    border-radius: 12px;
+    padding: 1rem 2rem 2rem;
+    box-shadow: 0 0 12px rgba(255, 98, 0, 0.4);
+    min-height: 220px;
+  }
+  section.products h2 {
+    font-family: 'Impact', sans-serif;
+    color: #ff6200;
+    margin-top: 0;
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  ul.product-list {
+    list-style: none;
+    padding-left: 0;
+    columns: 1;
+    column-gap: 3rem;
+  }
+  li.product-item {
+    background: #292929;
+    margin-bottom: 1.2rem;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 0 8px #ff6200aa;
+  }
+  li.product-item h3 {
+    margin: 0 0 0.6rem;
+    color: #ff9500;
+    font-family: 'Impact', sans-serif;
+    font-size: 1.25rem;
+  }
+  li.product-item p.price {
+    font-weight: 700;
+    color: #ff6200;
+    margin: 0 0 0.7rem;
+    font-size: 1.15rem;
+  }
+  li.product-item label {
+    display: block;
+    margin: 0.4rem 0 0.1rem 0;
+    font-weight: 600;
+    color: #ff8c42;
+    font-size: 0.9rem;
+  }
+  li.product-item select,
+  li.product-item input[type="number"] {
+    width: 100%;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    background: #121212;
+    color: #fff;
+    border: 1.5px solid #444;
+    transition: border-color 0.3s ease;
+  }
+  li.product-item select:focus,
+  li.product-item input[type="number"]:focus {
+    border-color: #ff6200;
+    box-shadow: 0 0 6px #ff6200cc;
+  }
+  li.product-item .btn-add-cart {
+    margin-top: 0.8rem;
+    background: #ff6200;
+    border: none;
+    padding: 0.65rem 1.3rem;
+    border-radius: 30px;
+    color: #121212;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  li.product-item .btn-add-cart:hover {
+    background: #e65c00;
+  }
+
+  /* Carrinho */
+  #cart {
+    margin-top: 2rem;
+    background: #1f1f1f;
+    border-radius: 12px;
+    box-shadow: 0 0 12px #ff6200aa;
+    padding: 1rem 1.5rem;
+  }
+  #cart h2 {
+    font-family: 'Impact', sans-serif;
+    color: #ff6200;
+    letter-spacing: 0.1em;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  #cartItems {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 1rem 0;
+  }
+  #cartItems li {
+    font-weight: 600;
+    background: #292929;
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #cartItems li span.details {
+    max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #cartItems li button.remove-btn {
+    background: transparent;
+    border: none;
+    color: #ff4c4c;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  #cartItems li button.remove-btn:hover {
+    color: #ff1a1a;
+  }
+  #cartTotal {
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: right;
+    color: #ff9500;
+  }
+
+  /* Login modal */
+  #loginModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18,18,18,0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  #loginModal.active {
+    display: flex;
+  }
+  #loginForm {
+    background: #292929;
+    padding: 2rem 2.5rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 0 15px #ff6200aa;
+  }
+  #loginForm h3 {
+    margin-top: 0;
+    text-align: center;
+    color: #ff6200;
+    font-family: 'Impact', sans-serif;
+    letter-spacing: 0.12em;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  #loginForm label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: #ff8c42;
+    font-size: 0.9rem;
+  }
+  #loginForm input, #loginForm textarea {
+    width: 100%;
+    border: none;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+    background: #121212;
+    color: #fff;
+    border: 1.5px solid #444;
+  }
+  #loginForm input:focus, #loginForm textarea:focus {
+    border-color: #ff6200;
+    box-shadow: 0 0 8px #ff6200cc;
+  }
+  #loginForm textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  #loginForm button {
+    background: #ff6200;
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 30px;
+    color: #121212;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+  }
+  #loginForm button:hover {
+    background: #e65c00;
+  }
+  #closeModalBtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
+    color: #ff6200;
+    cursor: pointer;
+    font-weight: 900;
+    line-height: 1;
+  }
+  #closeModalBtn:hover {
+    color: #e65c00;
+  }
+
+  /* Welcome message */
+  #welcomeMessage {
+    max-width: 960px;
+    margin: 0 auto 2rem;
+    background: #1f1f1f;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 0 10px #ff6200aa;
+    font-size: 1.1rem;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  /* Scrollbar styling for category nav on mobile */
+  .categories::-webkit-scrollbar {
+    height: 6px;
+  }
+  .categories::-webkit-scrollbar-thumb {
+    background: #ff6200cc;
+    border-radius: 4px;
+  }
+  .categories::-webkit-scrollbar-track {
+    background: #292929;
+  }
+
+  /* Responsivo */
+  @media only screen and (max-width: 600px) {
+    main {
+      margin: 1rem auto 3rem;
+      padding: 0 0.5rem;
+    }
+    .categories {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.3rem;
+    }
+    .category-btn {
+      flex-shrink: 0;
+    }
+    ul.product-list {
+      columns: 1;
+    }
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Basketball Store</h1>
+  <button id="loginButton" aria-label="Abrir formulário de login">LOGIN</button>
+</header>
+
+<div id="welcomeMessage" aria-live="polite" style="display:none;"></div>
+
+<main>
+  <nav class="categories" role="tablist" aria-label="Categorias de produtos">
+    <button class="category-btn active" role="tab" aria-selected="true" aria-controls="cat1" id="tab1" data-category="roupas">Roupas e acessórios</button>
+    <button class="category-btn" role="tab" aria-selected="false" aria-controls="cat2" id="tab2" data-category="equipamentos">Equipamentos essenciais</button>
+    <button class="category-btn" role="tab" aria-selected="false" aria-controls="cat3" id="tab3" data-category="treino">Itens de treino</button>
+    <button class="category-btn" role="tab" aria-selected="false" aria-controls="cat4" id="tab4" data-category="tecnologia">Tecnologia e inovação</button>
+    <button class="category-btn" role="tab" aria-selected="false" aria-controls="cat5" id="tab5" data-category="midia">Livros e mídia</button>
+  </nav>
+
+  <section class="products" tabindex="0">
+    <h2 id="categoryTitle">Roupas e acessórios</h2>
+    <ul class="product-list" id="productList" aria-live="polite" aria-relevant="additions removals">
+      <!-- Os produtos com seleção aparecerão aqui -->
+    </ul>
+  </section>
+
+  <section id="cart" aria-label="Carrinho de compras" style="display:none;">
+    <h2>Seu Carrinho</h2>
+    <ul id="cartItems"></ul>
+    <div id="cartTotal">Total: R$ 0,00</div>
+  </section>
+</main>
+
+<!-- Modal login -->
+<div id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle" tabindex="-1">
+  <form id="loginForm" novalidate>
+    <button type="button" id="closeModalBtn" aria-label="Fechar formulário de login">&times;</button>
+    <h3 id="loginTitle">Login / Cadastro</h3>
+    <label for="inputName">Nome completo</label>
+    <input type="text" id="inputName" name="name" placeholder="Seu nome completo" required autocomplete="name" />
+
+    <label for="inputEmail">E-mail</label>
+    <input type="email" id="inputEmail" name="email" placeholder="exemplo@dominio.com" required autocomplete="email" />
+
+    <label for="inputPhone">Telefone</label>
+    <input type="tel" id="inputPhone" name="phone" placeholder="(11) 99999-9999" pattern="[\d\s\-\+\(\)]{8,15}" autocomplete="tel" />
+
+    <label for="inputAddress">Endereço de entrega</label>
+    <textarea id="inputAddress" name="address" placeholder="Rua, número, complemento" required></textarea>
+
+    <label for="inputCity">Cidade</label>
+    <input type="text" id="inputCity" name="city" placeholder="Sua cidade" required autocomplete="address-level2" />
+
+    <label for="inputZip">CEP</label>
+    <input type="text" id="inputZip" name="zip" placeholder="00000-000" pattern="\\d{5}-?\\d{3}" required autocomplete="postal-code" />
+
+    <button type="submit">Salvar Dados</button>
+  </form>
+</div>
+
+<script>
+  (() => {
+    const currencyFormat = (value) => {
+      return value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    };
+
+    // Produtos com preços e variações
+    const products = {
+      roupas: [
+        {
+          name: "Camisetas",
+          price: 120.00,
+          variations: {
+            cor: ["Laranja", "Preto", "Branco", "Vermelho", "Azul"],
+            tamanho: ["P", "M", "G", "GG", "XG"],
+            numero: ["10", "23", "6", "34", "7"], // números famosos da NBA
+            time: ["Lakers", "Warriors", "Bulls", "Celtics", "Heat"]
+          }
+        },
+        {
+          name: "Shorts",
+          price: 95.00,
+          variations: {
+            cor: ["Laranja", "Preto", "Branco", "Cinza"],
+            tamanho: ["P", "M", "G", "GG", "XG"],
+            time: ["Lakers", "Warriors", "Bulls", "Celtics", "Heat"]
+          }
+        },
+        {
+          name: "Tênis específicos para basquete",
+          price: 450.00,
+          variations: {
+            marca: ["Nike", "Puma", "Adidas", "Under Armor", "Jordan"],
+            cor: ["Preto", "Branco", "Vermelho", "Azul", "Cinza"],
+            tamanho: ["37", "38", "39", "40", "41", "42", "43", "44", "45"]
+          }
+        },
+        {
+          name: "Meias de compressão",
+          price: 50.00,
+          variations: {
+            cor: ["Preto", "Branco", "Cinza"]
+          }
+        },
+        {
+          name: "Munhequeiras",
+          price: 40.00,
+          variations: {
+            cor: ["Preto", "Branco", "Laranja"]
+          }
+        },
+        {
+          name: "Faixas de cabeça",
+          price: 30.00,
+          variations: {
+            cor: ["Preto", "Branco", "Laranja", "Vermelho"]
+          }
+        }
+      ],
+      equipamentos: [
+        { name: "Bolas de basquete", price: 180.00 },
+        { name: "Tabelas e aros", price: 1200.00 },
+        { name: "Redes", price: 70.00 },
+        { name: "Bombas de ar", price: 55.00 }
+      ],
+      treino: [
+        { name: "Cones", price: 45.00 },
+        { name: "Marcadores de quadra", price: 65.00 },
+        { name: "Pesos para fortalecimento", price: 300.00 },
+        { name: "Cordas de pular", price: 70.00 }
+      ],
+      tecnologia: [
+        { name: "Aplicativos de treino", price: 40.00 },
+        { name: "Relógios esportivos", price: 1500.00 },
+        { name: "Sensores para monitoramento de desempenho", price: 850.00 }
+      ],
+      midia: [
+        { name: "Biografias de jogadores", price: 70.00 },
+        { name: "Revistas especializadas", price: 25.00 },
+        { name: "Pôsteres", price: 30.00 },
+        { name: "DVDs de jogos históricos", price: 45.00 }
+      ]
+    };
+
+    // Elementos
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const productList = document.getElementById('productList');
+    const categoryTitle = document.getElementById('categoryTitle');
+    const loginModal = document.getElementById('loginModal');
+    const loginButton = document.getElementById('loginButton');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const loginForm = document.getElementById('loginForm');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const cartSection = document.getElementById('cart');
+    const cartItemsElem = document.getElementById('cartItems');
+    const cartTotalElem = document.getElementById('cartTotal');
+
+    let currentCategory = 'roupas';
+
+    // Carrinho - Array de objetos { product, quantity, options }
+    let cart = [];
+
+    // Renderiza produtos da categoria com seleção e variações
+    function renderProducts(categoryKey) {
+      currentCategory = categoryKey;
+      categoryTitle.textContent = categoryKey === 'roupas' ? "Roupas e acessórios"
+                           : categoryKey === 'equipamentos' ? "Equipamentos essenciais"
+                           : categoryKey === 'treino' ? "Itens de treino"
+                           : categoryKey === 'tecnologia' ? "Tecnologia e inovação"
+                           : "Livros e mídia";
+
+      productList.innerHTML = '';
+
+      const items = products[categoryKey];
+      items.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'product-item';
+        li.setAttribute('tabindex', '0');
+
+        // Title & Price
+        const title = document.createElement('h3');
+        title.textContent = item.name;
+        li.appendChild(title);
+
+        const price = document.createElement('p');
+        price.className = 'price';
+        price.textContent = currencyFormat(item.price);
+        li.appendChild(price);
+
+        // Create form controls for variations if they exist
+        if(item.variations){
+          Object.entries(item.variations).forEach(([key, vals]) => {
+            const label = document.createElement('label');
+            label.setAttribute('for', `${categoryKey}_${index}_${key}`);
+            // Translation for keys for user-friendly labels
+            let labelText = "";
+            switch(key){
+              case 'cor': labelText = 'Cor'; break;
+              case 'tamanho': labelText = 'Tamanho'; break;
+              case 'numero': labelText = 'Número'; break;
+              case 'time': labelText = 'Time NBA'; break;
+              case 'marca': labelText = 'Marca'; break;
+              default: labelText = key;
+            }
+            label.textContent = labelText;
+            li.appendChild(label);
+
+            const select = document.createElement('select');
+            select.name = key;
+            select.id = `${categoryKey}_${index}_${key}`;
+            vals.forEach(v => {
+              const option = document.createElement('option');
+              option.value = v;
+              option.textContent = v;
+              select.appendChild(option);
+            });
+            li.appendChild(select);
+          });
+        }
+
+        // Quantity input
+        const labelQty = document.createElement('label');
+        labelQty.setAttribute('for', `${categoryKey}_${index}_quantity`);
+        labelQty.textContent = 'Quantidade';
+        li.appendChild(labelQty);
+        const inputQty = document.createElement('input');
+        inputQty.type = 'number';
+        inputQty.min = '1';
+        inputQty.value = '1';
+        inputQty.id = `${categoryKey}_${index}_quantity`;
+        inputQty.name = 'quantity';
+        li.appendChild(inputQty);
+
+        // Add to cart button
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-add-cart';
+        btn.textContent = 'Adicionar ao Carrinho';
+        btn.addEventListener('click', () => addToCart(categoryKey, index));
+        li.appendChild(btn);
+
+        productList.appendChild(li);
+      });
+    }
+
+    // Função para adicionar produto selecionado ao carrinho
+    function addToCart(category, index) {
+      const product = products[category][index];
+      const productIdPrefix = `${category}_${index}_`;
+
+      // coletar opções selecionadas se existem
+      let options = {};
+      if(product.variations){
+        Object.keys(product.variations).forEach(key => {
+          const sel = document.getElementById(productIdPrefix + key);
+          if (sel){
+            options[key] = sel.value;
+          }
+        });
+      }
+
+      // quantidade
+      const qtyInput = document.getElementById(productIdPrefix + 'quantity');
+      let quantity = parseInt(qtyInput.value, 10) || 1;
+      if(quantity < 1) quantity = 1;
+
+      // Montar objeto do item para o carrinho
+      const cartItem = {
+        category,
+        productIndex: index,
+        productName: product.name,
+        price: product.price,
+        quantity,
+        options
+      };
+
+      // Verificar se já existe item igual no carrinho (mesmo produto e mesmas opções)
+      const existingIndex = cart.findIndex(item => 
+        item.category === cartItem.category &&
+        item.productIndex === cartItem.productIndex && 
+        JSON.stringify(item.options) === JSON.stringify(cartItem.options)
+      );
+      if(existingIndex >= 0){
+        // Atualizar quantidade somando
+        cart[existingIndex].quantity += quantity;
+      } else {
+        cart.push(cartItem);
+      }
+
+      updateCartUI();
+    }
+
+    // Atualiza a interface do carrinho
+    function updateCartUI(){
+      // Exibir seção do carrinho se não estiver vazia
+      if(cart.length > 0){
+        cartSection.style.display = 'block';
+      }else{
+        cartSection.style.display = 'none';
+      }
+      cartItemsElem.innerHTML = '';
+
+      // Mostrar cada item no carrinho
+      cart.forEach((item, idx) => {
+        const li = document.createElement('li');
+        const detailsSpan = document.createElement('span');
+        detailsSpan.className = 'details';
+        let optsText = "";
+        if(item.options && Object.keys(item.options).length > 0){
+          let optsArray = [];
+          for (const [k,v] of Object.entries(item.options)){
+            let label = k;
+            switch(k){
+              case 'cor': label = 'Cor'; break;
+              case 'tamanho': label = 'Tamanho'; break;
+              case 'numero': label = 'Número'; break;
+              case 'time': label = 'Time NBA'; break;
+              case 'marca': label = 'Marca'; break;
+            }
+            optsArray.push(`${label}: ${v}`);
+          }
+          optsText = ` (${optsArray.join(", ")})`;
+        }
+        detailsSpan.textContent = `${item.productName}${optsText} — Qtd: ${item.quantity} — ${currencyFormat(item.price * item.quantity)}`;
+        li.appendChild(detailsSpan);
+
+        const btnRemove = document.createElement('button');
+        btnRemove.className = 'remove-btn';
+        btnRemove.setAttribute('aria-label', `Remover ${item.productName} do carrinho`);
+        btnRemove.textContent = '✕';
+        btnRemove.addEventListener('click', () => {
+          removeFromCart(idx);
+        });
+        li.appendChild(btnRemove);
+
+        cartItemsElem.appendChild(li);
+      });
+
+      // Atualizar total
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      cartTotalElem.textContent = `Total: ${currencyFormat(total)}`;
+    }
+
+    // Remove um item do carrinho pelo índice
+    function removeFromCart(index){
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    // Inicializa o produto com a primeira categoria
+    renderProducts('roupas');
+
+    // Gerenciamento das abas de categoria (acessibilidade e visual)
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected', 'false');
+        });
+        button.classList.add('active');
+        button.setAttribute('aria-selected', 'true');
+        const categoryKey = button.getAttribute('data-category');
+        renderProducts(categoryKey);
+      });
+    });
+
+    // Abrir modal
+    loginButton.addEventListener('click', () => {
+      loginModal.classList.add('active');
+      loginModal.focus();
+      populateFormWithStoredData();
+    });
+
+    // Fechar modal
+    closeModalBtn.addEventListener('click', () => {
+      loginModal.classList.remove('active');
+      loginForm.reset();
+    });
+
+    // Fechar modal ao clicar fora do formulário
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.classList.remove('active');
+        loginForm.reset();
+      }
+    });
+
+    // Preenche o formulário se dados estiverem no localStorage
+    function populateFormWithStoredData() {
+      const userDataStr = localStorage.getItem('basketballStoreUser');
+      if (userDataStr) {
+        try {
+          const userData = JSON.parse(userDataStr);
+          loginForm.inputName.value = userData.name || "";
+          loginForm.inputEmail.value = userData.email || "";
+          loginForm.inputPhone.value = userData.phone || "";
+          loginForm.inputAddress.value = userData.address || "";
+          loginForm.inputCity.value = userData.city || "";
+          loginForm.inputZip.value = userData.zip || "";
+        } catch {
+          // Ignore parsing errors
+        }
+      }
+    }
+
+    // Validação simples e salvar dados localmente
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!loginForm.checkValidity()) {
+        loginForm.reportValidity();
+        return;
+      }
+      const userData = {
+        name: loginForm.inputName.value.trim(),
+        email: loginForm.inputEmail.value.trim(),
+        phone: loginForm.inputPhone.value.trim(),
+        address: loginForm.inputAddress.value.trim(),
+        city: loginForm.inputCity.value.trim(),
+        zip: loginForm.inputZip.value.trim()
+      };
+      localStorage.setItem('basketballStoreUser', JSON.stringify(userData));
+      loginModal.classList.remove('active');
+      loginForm.reset();
+      showWelcomeMessage(userData);
+    });
+
+    // Exibir mensagem de boas-vindas
+    function showWelcomeMessage(user) {
+      welcomeMessage.style.display = 'block';
+      welcomeMessage.innerHTML = `
+        Olá, <strong>${user.name}</strong>! <br />
+        Seus dados foram salvos. Seu pedido será entregue em: <br />
+        ${user.address}, ${user.city} - CEP: ${user.zip}
+      `;
+      welcomeMessage.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Mostrar mensagem se já houver dados armazenados
+    function initializeWelcome() {
+      const userDataStr = localStorage.getItem('basketballStoreUser');
+      if (userDataStr) {
+        try {
+          const userData = JSON.parse(userDataStr);
+          showWelcomeMessage(userData);
+        } catch {
+          //
+        }
+      }
+    }
+
+    initializeWelcome();
+
+  })();
+</script>
+
+</body>
+</html>

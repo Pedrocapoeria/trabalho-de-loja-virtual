@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login - Basketball Store</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles_login.css') }}">
+
+
+</head>
+<body>
+
+<div class="login-container" role="main" aria-labelledby="loginTitle">
+  <h1 id="loginTitle">Login</h1>
+  <form id="loginForm" action = "/acesso" method="POST">
+    <label for="inputUserLogin">Usuário</label>
+    <input type="text" id="inputUserLogin" name="username" placeholder="Seu usuário" required autocomplete="username" />
+
+    <label for="inputPasswordLogin">Senha</label>
+    <input type="password" id="inputPasswordLogin" name="password" placeholder="Sua senha" required autocomplete="current-password" />
+
+    <button type="submit">Entrar</button>
+  </form>
+  <div class="message">
+    Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a>
+  </div>
+</div>
+
+
+
+</body>
+</html>
+

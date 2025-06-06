@@ -1,0 +1,85 @@
+
+  /* Reset e base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .login-container {
+    background: #292929;
+    padding: 2rem 2.5rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 15px #ff6200aa;
+  }
+  h1 {
+    margin-top: 0;
+    text-align: center;
+    color: #ff6200;
+    font-family: 'Impact', sans-serif;
+    letter-spacing: 0.12em;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: #ff8c42;
+    font-size: 0.9rem;
+  }
+  input {
+    width: 100%;
+    border: none;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+    background: #121212;
+    color: #fff;
+    border: 1.5px solid #444;
+  }
+  input:focus {
+    border-color: #ff6200;
+    box-shadow: 0 0 8px #ff6200cc;
+  }
+  button {
+    background: #ff6200;
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 30px;
+    color: #121212;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #e65c00;
+  }
+  .message {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+  .message a {
+    color: #ff6200;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .message a:hover {
+    text-decoration: underline;
+  }
